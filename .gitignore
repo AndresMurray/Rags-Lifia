@@ -1,0 +1,28 @@
+# ============================
+# Datos persistentes de Docker
+# ============================
+# Estos se generan automáticamente al hacer "docker compose up".
+# Pueden pesar GB (modelos de IA, bases de datos, etc.)
+# Cada persona los regenera en su máquina.
+appdata/ollama/*
+appdata/owui/*
+appdata/postgress/*
+appdata/postgress_vector/*
+appdata/pipelines/*
+appdata/rawdata/*
+
+# Mantener las carpetas vacías en el repo (Git no trackea carpetas vacías)
+!appdata/ollama/.gitkeep
+!appdata/owui/.gitkeep
+!appdata/postgress/.gitkeep
+!appdata/postgress_vector/.gitkeep
+!appdata/pipelines/.gitkeep
+!appdata/rawdata/.gitkeep
+
+# ============================
+# Variables de entorno (SECRETOS)
+# ============================
+# Contienen passwords y claves secretas.
+# Se pushea un .env.example como referencia.
+env/*.env
+!env/*.env.example
