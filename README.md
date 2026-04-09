@@ -106,13 +106,16 @@ lifia-rag-open-webui-1  Up
 lifia-rag-pipelines-1   Up
 ```
 
-### 6. Descargar un modelo de IA
+### 6. Descargar modelos de IA
 
-Ollama arranca **sin modelos**. Tenés que descargar al menos uno:
+Ollama arranca **sin modelos**. Para este pipeline RAG necesitás:
 
 ```bash
 # Modelo recomendado para empezar (~4.7 GB)
 docker exec -it lifia-rag-ollama-1 ollama pull llama3
+
+# Modelo de embeddings (obligatorio para RAG)
+docker exec -it lifia-rag-ollama-1 ollama pull nomic-embed-text
 
 # Alternativa más liviana (~2 GB)
 docker exec -it lifia-rag-ollama-1 ollama pull phi3
@@ -133,11 +136,41 @@ La primera vez te va a pedir **crear una cuenta de administrador**. Esa cuenta e
 
 ## ✅ ¡Listo!
 
-Ya podés chatear con la IA. Para usar RAG (que la IA lea tus documentos):
+Ya podés chatear con la IA. Este repo ya incluye el pipeline para Seven Wonders en:
 
-1. Poné tus documentos (PDFs, TXTs, etc.) en la carpeta `appdata/rawdata/`
-2. Configurá un pipeline de RAG desde la interfaz de Open WebUI
-3. Hacé preguntas sobre el contenido de tus documentos
+- `appdata/pipelines/seven_wonders_rag.py`
+
+Este pipeline descarga automáticamente datos reales desde el dataset público `bilgeyucel/seven-wonders` (Hugging Face) y los indexa en `pgvector` (`vdb`) para RAG persistente.
+
+### Integración en Open WebUI Pipelines (para desarrolladores)
+
+1. Reiniciá servicios para que Open WebUI tome la conexión a Pipelines:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+2. Entrá a [http://localhost:8180](http://localhost:8180).
+3. En Open WebUI, abrí el selector de modelos y elegí el pipeline **Seven Wonders RAG**.
+4. Iniciá chat normal y preguntá por las Seven Wonders.
+
+Ejemplos:
+
+- "Describí el Faro de Alejandría en 100 palabras"
+- "Compará el Mausoleo de Halicarnaso con el Coloso de Rodas"
+
+Para agregar más conocimiento RAG en el mismo pipeline, sumá archivos `.txt` o `.md` en `appdata/rawdata/` y luego reiniciá el servicio `pipelines`:
+
+```bash
+docker compose restart pipelines
+```
+
+Verificación rápida de indexación real en base vectorial:
+
+```bash
+docker exec lifia-rag-vdb-1 psql -U postgres -d postgres -c "SELECT COUNT(*) FROM sw_knowledge;"
+```
 
 ---
 
