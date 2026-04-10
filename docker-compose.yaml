@@ -8,14 +8,14 @@ services:
            - "${OLLAMA_PORT:-11434}:11434"
         volumes:
             - ollama_data:/root/.ollama
-              #        deploy:
-              #            resources:
-              #                reservations:
-              #                    devices:
-              #                        - driver: nvidia
-              #                          count: 1
-              #                          #device_ids: ["1"]
-              #                          capabilities: [gpu]
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: 1
+                          #device_ids: ["1"]
+                          capabilities: [gpu]
 
     db:
         image: postgres:15-alpine
@@ -23,7 +23,7 @@ services:
         env_file:
             - env/db.env
         ports:
-            - "${DB_PORT:-5432}:5432"
+            - "${DB_PORT:-5434}:5432"
         volumes:
             - pg_data:/var/lib/postgresql/data
 
@@ -46,14 +46,14 @@ services:
             - owui_data:/app/backend/data
         ports:
             - "${OWEBUI_PORT:-8180}:8080"
-              #        deploy:
-              #            resources:
-              #                reservations:
-              #                    devices:
-              #                        - driver: nvidia
-              #                          count: 1
-              #                          #device_ids: ["1"]
-              #                          capabilities: [gpu]
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        - driver: nvidia
+                          count: 1
+                          #device_ids: ["1"]
+                          capabilities: [gpu]
 
     pipelines:
         image: ghcr.io/open-webui/pipelines:main

@@ -19,6 +19,9 @@ appdata/rawdata/*
 !appdata/pipelines/.gitkeep
 !appdata/rawdata/.gitkeep
 
+# PERMITIR versionar el código de los pipelines
+!appdata/pipelines/*.py
+
 # ============================
 # Variables de entorno (SECRETOS)
 # ============================
