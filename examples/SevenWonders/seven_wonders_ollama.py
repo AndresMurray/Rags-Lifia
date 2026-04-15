@@ -16,8 +16,9 @@ document_store = InMemoryDocumentStore()
 dataset = load_dataset("bilgeyucel/seven-wonders", split="train")
 docs = [Document(content=doc["content"], meta=doc["meta"]) for doc in dataset]
 
-EMBEDDING_MODEL_NAME="nomic-embed-text"
-MODEL_NAME="llama3"
+EMBEDDING_MODEL_NAME="bge-m3"
+MODEL_NAME="qwen3.5"
+MODEL_NAME="ministral-3:3b"
 OLLAMA_BASE_URL="http://localhost:11434"
 
 doc_embedder = OllamaDocumentEmbedder(

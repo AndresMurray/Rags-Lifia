@@ -1,31 +1,25 @@
-# ============================
-# Datos persistentes de Docker
-# ============================
-# Estos se generan automáticamente al hacer "docker compose up".
-# Pueden pesar GB (modelos de IA, bases de datos, etc.)
-# Cada persona los regenera en su máquina.
-appdata/ollama/*
-appdata/owui/*
-appdata/postgress/*
-appdata/postgress_vector/*
-appdata/pipelines/*
-appdata/rawdata/*
+# Docker / local state
+infrastructure/appdata/*
+!infrastructure/appdata/pipelines/
 
-# Mantener las carpetas vacías en el repo (Git no trackea carpetas vacías)
-!appdata/ollama/.gitkeep
-!appdata/owui/.gitkeep
-!appdata/postgress/.gitkeep
-!appdata/postgress_vector/.gitkeep
-!appdata/pipelines/.gitkeep
-!appdata/rawdata/.gitkeep
+# Ignorar todo dentro de pipelines por defecto (archivos generados o descargados)
+infrastructure/appdata/pipelines/*
+# ...pero permitir los archivos que queremos versionar específicamente
+!infrastructure/appdata/pipelines/seven_wonders_rag.py
+!infrastructure/appdata/pipelines/.gitkeep
 
-# PERMITIR versionar el código de los pipelines
-!appdata/pipelines/*.py
+# Seguir ignorando las subcarpetas de configuración personal
+infrastructure/appdata/pipelines/*/
 
-# ============================
-# Variables de entorno (SECRETOS)
-# ============================
-# Contienen passwords y claves secretas.
-# Se pushea un .env.example como referencia.
-env/*.env
-!env/*.env.example
+# Environment files
+infrastructure/env/*.env
+!infrastructure/env/*.env.example
+infrastructure/.env
+
+# Python
+**/__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db

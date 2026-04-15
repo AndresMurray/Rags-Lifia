@@ -1,0 +1,108 @@
+services:
+    ollama:
+        image: ollama/ollama
+        restart: unless-stopped
+        env_file:
+           - env/ollama.env
+        ports:
+           - "${OLLAMA_PORT:-11434}:11434"
+        volumes:
+            - ollama_data:/root/.ollama
+              #        deploy:
+              #            resources:
+              #                reservations:
+              #                    devices:
+              #                        - driver: nvidia
+              #                          count: 1
+              #                          #device_ids: ["1"]
+              #                          capabilities: [gpu]
+
+    db:
+        image: postgres:15-alpine
+        restart: unless-stopped
+        env_file:
+            - env/db.env
+        ports:
+            - "${DB_PORT:-5432}:5432"
+        volumes:
+            - pg_data:/var/lib/postgresql/data
+
+    vdb:
+        image: ankane/pgvector
+        restart: unless-stopped
+        env_file:
+            - env/vdb.env
+        ports:
+            - "${VDB_PORT:-5433}:5432"
+        volumes:
+            - pgv_data:/var/lib/postgresql/data
+
+    open-webui:
+        image: 'ghcr.io/open-webui/open-webui:latest'
+        restart: unless-stopped
+        env_file:
+            - env/openwebui.env
+        volumes:
+            - owui_data:/app/backend/data
+        ports:
+            - "${OWEBUI_PORT:-8180}:8080"
+              #        deploy:
+              #            resources:
+              #                reservations:
+              #                    devices:
+              #                        - driver: nvidia
+              #                          count: 1
+              #                          #device_ids: ["1"]
+              #                          capabilities: [gpu]
+
+    pipelines:
+        image: ghcr.io/open-webui/pipelines:main
+        restart: unless-stopped
+        env_file:
+          - env/pipelines.env
+        ports:
+          - "${PIPELINES_PORT:-9099}:9099"
+        extra_hosts:
+          - host.docker.internal:host-gateway
+        volumes:
+          - pipelines:/app/pipelines
+          - rawdata:/app/pipelines/rawdata
+
+
+volumes:
+    ollama_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/ollama/
+    owui_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/owui/
+    pg_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/postgress/
+    pgv_data:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/postgress_vector/
+    pipelines:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/pipelines/
+    rawdata:
+        driver: local
+        driver_opts:
+            type: 'none'
+            o: 'bind'
+            device: ./appdata/rawdata/
