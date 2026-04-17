@@ -1,0 +1,6 @@
+haystack-ai
+markitdown-haystack
+markitdown[pdf]
+ollama-haystack
+pdfminer.six
+psycopg2-binary
